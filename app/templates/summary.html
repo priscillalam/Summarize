@@ -1,0 +1,80 @@
+<html>
+    <head>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <title>Summarize</title>
+        <link rel="stylesheet" type="text/css" href="/static/summary.css">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
+        <script type="text/javascript">
+            window.videoId = "{{video_id}}";
+            window.intervalsToSkip = [
+                {% for time_start, time_end in intervals_to_skip %}[{{time_start}}, {{time_end}}],
+                {% endfor %}];
+        </script>
+        <script src="/static/summary.js" type="text/javascript"></script>
+    </head>
+    <body onresize="updateDimensions()" onload="updateDimensions()">
+        <div class="header">
+            <div class="logo">
+                Summarize
+            </div>
+            <input onkeydown="keyDown(event)" id="header_input" class="header_input" placeholder="Enter Youtube URL"/>
+        </div>
+        <div class="content">
+            <table class="video_table">
+                <tr>
+                    <td class="video_column">
+                        <div class="player" id="player"></div>
+                    </td>
+                    <td class="items_column">
+                        <div class="items_content" id="sidebar">
+                            {% for item in items %}
+                                {% if item.is_highlight %}
+                                    <div 
+                                        class="item"
+                                        data-time-start="{{item.time_start}}"
+                                        data-time-end="{{item.time_end}}">
+                                        <a onclick="skipTo({{item.time_start}})" class="highlight">
+                                            {{item.description}} {{item.readable_time}}
+                                        </a>
+                                    </div>
+                                {% else %}
+                                    <div
+                                        class="item"
+                                        data-time-start="{{item.time_start}}"
+                                        data-time-end="{{item.time_end}}">
+                                        <div class="keyword_title">
+                                            {{item.keyword}}
+                                        </div>
+                                        {{item.definition}}<br/>
+                                        <a class="keyword_link" href="{{item.wikipedia_link}}">
+                                            More Information
+                                        </a>
+                                        <br/>
+                                        <a onclick="skipTo({{item.time_start}})" class="keyword_time">
+                                            {{item.readable_time}}
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <div class="padding"></div>
+            <label class="switch">
+                <input type="checkbox" checked="true">
+                <span class="slider round"></span>
+            </label>
+            <div class="switch-label">
+                Play Highlights Only
+            </div>
+            <div class="padding"></div>
+            <div class="bottom_text_block">
+                <div class="title">
+                    Summary
+                </div>
+                {{summary}}
+            </div>
+        </div>
+    </body>
+</html>
