@@ -5,6 +5,7 @@ Summarize extracts highlights from video and provides context using information 
 ### Prerequisites
 - Python 3 with venv
 - Google Cloud Vision API credentials. Place the credentials.json in app/credentials
+- FFmpeg installed
 
 ### Instructions to run
 
