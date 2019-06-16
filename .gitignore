@@ -2,4 +2,7 @@
 *.pyc
 env/
 app/credentials/*
-
+abstractive/model
+abstractive/misc
+abstractive/data/test.custom.txt
+abstractive/output

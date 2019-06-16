@@ -1,5 +1,6 @@
 import io
 import numpy
+import os
 import re
 import spacy
 import string
@@ -9,12 +10,20 @@ from sklearn.metrics import pairwise_distances_argmin_min
 from spacy.lang.en.stop_words import STOP_WORDS
 
 class Summarizer:
-    def __init__(self, clusters=5):
+    def __init__(self, clusters=5, abstractive=False):
         self.clusters = clusters
         self.nlp = spacy.load('en_core_web_sm')
+        self.abstractive = abstractive
 
     def summarize(self, text):
         print("Compiling summary.")
+        return \
+            "<b>Abstractive</b><br/>" + \
+            self.summarize_abstractive(text) + \
+            "<br/><br/><b>Extractive</b><br/>" + \
+            self.summarize_extractive(text)
+        
+    def summarize_extractive(self, text):
         sentences_to_vectors = dict()
         sentences = []
         for sentence in self.nlp(text).sents:
@@ -28,6 +37,43 @@ class Summarizer:
 
         closest.sort()
         return " ".join([str(sentences[index]) for index in closest])
+
+    def summarize_abstractive(self, text):
+        sentences = []
+        for sentence in self.nlp(text).sents:
+            sentence = str(sentence)
+            sentence = sentence.strip()
+            sentence = sentence.lstrip()
+            sentence = sentence.lower()
+            sentence = sentence.replace("\n", "")
+            sentence = re.sub(r'[^\w\s]','',sentence)
+            sentences.append(sentence)
+       
+        cluster_size = int(len(sentences) / self.clusters)
+        clusters = [sentences[n:n+cluster_size] for n in range(0, len(sentences), cluster_size)]
+        summary = ""
+        for cluster in clusters:
+            clustered_sentence = " ".join(cluster)
+            current_file_dir = os.path.dirname(os.path.realpath(__file__))
+            current_parent_dir = os.path.dirname(current_file_dir)
+            abstractive_dir =  current_parent_dir + "/abstractive/"
+            output_dir = abstractive_dir + "output"
+            current_dir = os.getcwd()
+            os.system("rm -rf " + output_dir)
+            input_file_name = abstractive_dir + "data/test.custom.txt"
+            input_file = open(input_file_name, "w")
+            input_file.write(clustered_sentence)
+            input_file.close()
+            os.chdir(abstractive_dir)
+            os.system("python script/test.py")
+            os.chdir(current_dir)
+            try:
+                output_file = open(output_dir + "/custom.10_300000.txt", "r")
+                summary += output_file.read()
+                output_file.close()
+            except FileNotFoundError:
+                continue
+        return summary
        
 class WordUtils:
     excluded_characters = set(string.punctuation).union(set(string.digits))

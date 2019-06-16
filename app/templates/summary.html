@@ -73,7 +73,9 @@
                 <div class="title">
                     Summary
                 </div>
-                {{summary}}
+                {% autoescape off %}
+                    {{summary}}
+                {% endautoescape %}
             </div>
         </div>
     </body>

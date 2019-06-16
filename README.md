@@ -2,10 +2,14 @@
 
 Summarize extracts highlights from video and provides context using information from the video’s subtitles and the video frame data itself. Users specify a Youtube URL in the input field and Summarize will display the highlights of the video, keywords with definitions, and a summary of the video. This is done through different artificial intelligence techniques such as TextRank, K-Means, and Google’s Cloud Vision. The app is written with the Django framework and runs on Python 3. 
 
+### Works cited
+- https://github.com/thunlp/TensorFlow-Summarization for Tensorflow seq2seq code and model
+
 ### Prerequisites
 - Python 3 with venv
 - Google Cloud Vision API credentials. Place the credentials.json in app/credentials
 - FFmpeg installed
+- Download pretrained models from https://github.com/thunlp/TensorFlow-Summarization and place in abstractive/models/
 
 ### Instructions to run
 
