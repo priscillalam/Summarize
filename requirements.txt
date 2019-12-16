@@ -32,7 +32,7 @@ sklearn==0.0
 soupsieve==1.8
 spacy==2.1.2
 srsly==0.0.5
-tensorflow==1.1.0
+tensorflow==1.15.0
 thinc==7.0.4
 tqdm==4.31.1
 urllib3==1.24.1
